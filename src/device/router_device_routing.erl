@@ -459,6 +459,11 @@ validate_packet_offer(Offer, _Pid, Chain) ->
                             Error;
                         ok ->
                             PayloadSize = blockchain_state_channel_offer_v1:payload_size(Offer),
+                            Region = blockchain_state_channel_offer_v1:region(Offer),
+                            %% ToDo - Get SF and Bandwidth.  Use those values to calculate DR.  See - https://www.thethingsnetwork.org/docs/lorawan/modulation-data-rate/
+                            DR = 0,
+                            _MaxPayloadSize = lorawan_mac_region:max_payload_size(Region, DR),
+                            %% ToDo - do not continue if PayloadSize exceeds MaxPayloadSize
                             case check_device_balance(PayloadSize, Device, PubKeyBin, Chain) of
                                 {error, _Reason} = Error -> Error;
                                 ok -> {ok, Device}
